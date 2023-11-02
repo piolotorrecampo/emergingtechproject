@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
-        color: 'white'
+        color: 'white',
+        fontFamily: 'Poppins',
+        fontSize: 15,
     }
 });

@@ -28,7 +28,7 @@ export const ShowHidePasssword = (props) => {
           color="white" 
         />
       </Pressable>
-      <Text style={styles.text}>Show Password</Text>
+      <Text style={styles.textPassword}>Show Password</Text>
     </View>
   )  
 }
@@ -54,9 +54,12 @@ const styles = StyleSheet.create({
       color: 'white',
     },
     showpassword: {
-      color: 'white',
       flexDirection: 'row',
-      alignItems: 'center',
       gap: 5,
+    },
+    textPassword: {
+      fontFamily: 'Poppins',
+      marginTop: 2,
+      color: 'white',
     }
 });
