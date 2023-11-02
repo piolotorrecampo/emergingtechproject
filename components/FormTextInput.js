@@ -1,29 +1,62 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, Pressable} from "react-native";
+import { Ionicons } from '@expo/vector-icons'; 
 
-const FormTextInput = (props) => {
+export const FormTextInput = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{props.title}</Text>
-      <TextInput style={styles.textinput} value={props.value} placeholder={props.placeholder}/>
+      <View style={styles.textinputContainer}>
+        <TextInput 
+          style={styles.textinput} 
+          onChangeText={props.onChangeText} 
+          secureTextEntry={props.secureTextEntry} 
+          value={props.value} 
+          placeholder={props.placeholder}
+        />
+      </View>
     </View>
   );
 };
 
-export default FormTextInput;
+export const ShowHidePasssword = (props) => {
+  return(
+    <View style={styles.showpassword}>
+      <Pressable onPress={props.onPress}>
+        <Ionicons 
+          name={props.state ? 'checkbox-sharp' : 'checkbox-outline'}
+          size={24} 
+          color="white" 
+        />
+      </Pressable>
+      <Text style={styles.text}>Show Password</Text>
+    </View>
+  )  
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        margin: 10,
-        padding: 10,
-    },
+    textinputContainer: {
+      borderWidth: 2,
+      borderRadius: 15,
+      borderColor: "white",
+      height: 50,
+      flexDirection: 'row',
+      alignItems: 'center'
+    }, 
     text: {
-        
+      paddingBottom: 5,
+      color: 'white',
+      fontFamily: 'Poppins',
     },
     textinput: {
-        borderWidth: 2,
-        borderRadius: 5,
-        borderColor: "white",
-        height: 50,
+      padding: 10,
+      width: '85%',
+      fontFamily: 'Poppins',
+      color: 'white',
+    },
+    showpassword: {
+      color: 'white',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
     }
 });

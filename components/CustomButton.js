@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import React from "react";
 
 const CustomButton = (props) => {
   const type = props.type
 
   return (
-    <Pressable onPress={props.destination} style={type ? styles.containerOutline : styles.container}>
+    <Pressable 
+        onPress={props.onPress} 
+        style={type ? styles.containerOutline : styles.container}
+    >
         <Text style={styles.text}>{props.title}</Text>
     </Pressable>
   );
@@ -18,9 +20,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFC20F",
         height: 'auto',
         width: 'auto',
-        borderRadius: 5,
+        borderRadius: 15,
         padding: 15,
-        margin: 4,
         boxShadow: '7px 6px 24px -10px rgba(0,0,0,0.67)',
     },
     containerOutline: {
@@ -28,9 +29,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         height: 'auto',
         width: 'auto',
-        borderRadius: 5,
+        borderRadius: 15,
         padding: 15,
-        margin: 4,
     },
     text: {
         textAlign: 'center',

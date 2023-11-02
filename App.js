@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LandingScreen from './screens/LandingScreen';
 import Register from './screens/Register';
 import Login from './screens/Login';
+import { useFonts } from 'expo-font';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,12 +13,20 @@ function LoginStack() {
     <Stack.Navigator initialRouteName="LandingScreen">
       <Stack.Screen name="LandingScreen" component={LandingScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
+       <Stack.Screen name='Register'component={Register} options={{ headerShown: false }}/>
     </Stack.Navigator>
   )
 }
 
 export default function App() {
+  const [loaded] = useFonts({
+    Poppins: require('./assets/fonts/Poppins-Regular.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <LoginStack/>
