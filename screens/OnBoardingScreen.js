@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ImageBackground, Image, SafeAreaView } from "re
 import React from "react";
 import CustomButton from "../components/CustomButton";
 
-const LandingScreen = ({ navigation }) => {
+const OnBoardingScreen = ({ navigation }) => {
 
   const clickHandlerLogin = () => {
     navigation.navigate('Login')
@@ -38,7 +38,7 @@ const LandingScreen = ({ navigation }) => {
   );
 };
 
-export default LandingScreen;
+export default OnBoardingScreen;
 
 const styles = StyleSheet.create({
     container:{
