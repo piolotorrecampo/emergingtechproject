@@ -8,17 +8,17 @@ import Favorites from '../screens/Favorites';
 import Account from '../screens/Accounts/Account'
 import FoodDetail from '../screens/FoodDetail';
 import MyProducts from '../screens/Accounts/MyProducts';
-import AuthStack from './AuthStack'
 import ChooseSetting from '../screens/Accounts/ChooseSetting';
 import ChangePasswordForm from '../screens/Accounts/ChangePasswordForm';
 import ChangePersonalInfoForm from '../screens/Accounts/ChangePersonalInfoForm';
 import AddProduct from '../screens/Accounts/AddProduct';
 import UpdateProduct from '../screens/Accounts/UpdateProduct';
+import Login from '../screens/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => {
+export const HomeStack = () => {
   return (
     <Stack.Navigator initialRouteName="Foods">
       <Stack.Screen name="Foods" component={Home} options={{ headerShown: false }}/>
@@ -41,7 +41,7 @@ const AccountStack = () => {
   );
 };
 
-export default function App() {
+export default function AppStack() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

@@ -1,7 +1,9 @@
-import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Image, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Modal, Pressable  } from "react-native";
 import React, { useState } from "react";
 import { FormTextInput, ShowHidePasssword } from "../components/FormTextInput";
 import CustomButton from "../components/CustomButton";
+import { auth } from "../services/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Register = () => {
   const [hidePassword, setHidePassword] = useState(false);
@@ -10,10 +12,30 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState('');
+  const [isSignedUp, setSignedUp] = useState(false);
 
-  const handleHidePassword = () => {
-    setHidePassword(!hidePassword)
+  const handleHidePassword = async (password, repeatPassword) => {
+    if(password === repeatPassword){
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        setPassword('');
+        setReapetPassword('');
+        setPhoneNumber('');
+        setEmail('');
+        setFullname('');
+        setSignedUp(true);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+    }
   }
+
+  const handleCloseModal = () => {
+    setSignedUp(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,14 +77,29 @@ const Register = () => {
             />   
           </View>
           <ShowHidePasssword
-            onPress={handleHidePassword}
             state={hidePassword}
           />
           <Text style={styles.text}>or</Text>
           <CustomButton
             title="Create an account"
+            onPress={() => handleHidePassword(password, repeatPassword)}
           />
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isSignedUp}
+          onRequestClose={handleCloseModal}
+        >
+        <View style={styles.modal}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>You have successfully registered!</Text>
+            <Pressable style={styles.modalButton} onPress={handleCloseModal}>
+              <Text>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -106,5 +143,30 @@ const styles = StyleSheet.create({
     color: 'lightblue',
     textDecorationLine: 'underline',
     textAlign: 'center',
-  }
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
+  },
+  modalContent: {
+    alignItems: 'center',
+    backgroundColor: "#FFC20F",
+    padding: 10,
+    borderRadius: 10,
+    gap: 10,
+    borderColor: "white",
+    borderWidth: 2,
+  },
+  modalText: {
+    fontSize: 18,
+  },
+  modalButton: {
+    backgroundColor: 'rgb(209, 165, 12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    width: 260,
+    borderRadius: 10,
+  },
 });
