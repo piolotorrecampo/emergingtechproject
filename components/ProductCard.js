@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { db } from "../services/firebase";
 import { doc, updateDoc, getDoc, arrayRemove } from '@firebase/firestore';
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        maxHeight: 220,
+        maxHeight: 300,
         maxWidth: 190,
-        borderRadius: 10,
-        margin: 5,
+        borderRadius: 7,
+        margin: 4
     },
     descriptionBox: {
-        flexDirection: 'col',
+        flexDirection: 'column',
     },
     descriptionContainer: {
         flexDirection: 'row',
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ECBC24',
         width: '100%',
-        maxWidth: 190,
+        maxWidth: 200,
         paddingVertical: 8,
         paddingHorizontal: 12,
         gap: 5,
@@ -167,7 +167,8 @@ const styles = StyleSheet.create({
     titleText: {
        color: 'white',
        fontWeight: 'bold',
-       fontSize: 15,
+       fontSize: 16,
+       maxWidth: 140,
     },
     priceText: {
         fontSize: 12,

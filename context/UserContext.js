@@ -54,6 +54,7 @@ export const UserProvider = ({ children }) => {
       clearInterval(timerId);
     };
   }, []);
+  
 
   return (
     <UserContext.Provider value={{ userData, setUserData, products, userDataUpdated }}>

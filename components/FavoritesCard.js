@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 15,
-        gap: 5,
+        gap: 20,
     },
     image: {
        width: 100,
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
        color: 'white',
        fontWeight: 'bold',
        fontSize: 17,
+       width: 210,
     },
     reviewsText: {  
         color: 'white',
