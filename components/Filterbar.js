@@ -1,42 +1,46 @@
-import { StyleSheet, Text, View, TextInput, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons';
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const logo = require('../assets/icon.png');
 
 const Filterbar = () => {
+  const navigation = useNavigation();
+
+  const onPress = () => {
+    navigation.navigate('SearchScreen');
+  }
+
   return (
     <View style={styles.container}>
-        <Image style={styles.logo} source={logo}/>
-      <View>
-        <TextInput placeholder="Search" style={styles.textInput}/>
-      </View>
+      <Image style={styles.logo} source={logo}/>
+      <Pressable onPress={() => onPress()} style={styles.searchIcon}>
+        <FontAwesome name="search" size={20} color="black" />
+      </Pressable>
     </View>
   )
 }
 
-export default Filterbar
+export default Filterbar;
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFC20F',   
         paddingTop: 30,
         flexDirection: 'row',
-        height: 90,
+        height: 85,
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 5,
+        paddingHorizontal: 7,
         paddingVertical: 5,
         marginBottom:  10,
     },
-    textInput: {
-        borderColor: 'white',
-        borderWidth: 1,
-        width: 290,
-        borderRadius: 100,
-        padding: 7,
+    searchIcon: {
+      paddingHorizontal: 15,
     },
     logo: {
-        width: 100,
-        height: 59,
+        width: 80,
+        height: 49,
     }
 })

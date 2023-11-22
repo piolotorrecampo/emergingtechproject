@@ -1,89 +1,44 @@
-import { StyleSheet, ScrollView, View, Image } from "react-native";
 import React from "react";
-import MyProductCard from "../../components/MyProductCard";
-import { SafeAreaView } from "react-native-safe-area-context";
-import CustomButton from "../../components/CustomButton";
+import { StyleSheet, ScrollView, View, Pressable, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Filterbar from "../../components/Filterbar";
+import { useUser } from "../../context/UserContext";
 
-const lechon = require('../../assets/lechon.png')
+import MyProductCard from "../../components/MyProductCard";
+import CustomButton from "../../components/CustomButton";
+import Filterbar from "../../components/Filterbar";
+import Header from "../../components/Header";
 
 const MyProduct = () => {
-
   const navigation = useNavigation();
+  const { userData, products } = useUser();
 
-  const data = [
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-    {
-        image: lechon,
-        title: 'Crispy Lechon Kawali',
-        reviews: '4.6 Mekus Mekus',
-        price: '200',
-    },
-  ];
+  const userProducts = products.filter(product => product.sellerId === userData.id);
 
   return (
     <View>
-      <Filterbar/>
+      <Header
+        title='My Products'
+      />
         <View style={styles.buttons}>
           <CustomButton
             title="Add Products"
             onPress={() => navigation.navigate('AddProduct')}
           />
         </View>
-        <ScrollView>
-          <View style={styles.container}>
-          {data && data.map((product, index) => (
-            <MyProductCard
-              key={index} 
-              image={product.image}
-              title={product.title}
-              reviews={product.reviews}
-              price={product.price}
-            />
+        <ScrollView>  
+          {userProducts && userProducts.map((product) => (
+            <View style={styles.container}>
+              <MyProductCard
+                id={product.id} 
+                image={product.image}
+                title={product.name}
+                reviews={product.ratings}
+                price={product.price}
+                description={product.description}
+                type={product.type}
+              />
+            </View>
           ))}
-          </View>
         </ScrollView>
     </View>
   );
@@ -96,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 10,
+    marginBottom: 10,
   },
   buttons: {
     marginBottom: 10,

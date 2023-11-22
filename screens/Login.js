@@ -1,40 +1,56 @@
-import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Pressable, Modal, Button } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Pressable, Modal, Alert } from "react-native";
 import React, { useState } from "react";
 import {FormTextInput, ShowHidePasssword} from "../components/FormTextInput";
-import CustomButton from "../components/CustomButton"
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { AppStack } from "../navigator/AppStack";
-import { auth } from "../services/firebase";
-import { useNavigation } from '@react-navigation/native';
+import CustomButton from "../components/CustomButton";
+import { useUser } from '../context/UserContext';
 
-const Login = () => {
+import { db } from "../services/firebase";
+import { getDocs, query, collection, where } from 'firebase/firestore';
+
+const Login = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(false);
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [isSignedIn, setSignedIn] = useState(false);
-  const navigation = useNavigation();
+  const { setUserData } = useUser();
 
-  const handleHidePassword = () => {
-    setHidePassword(!hidePassword);
-  }
+  const handleLogin = async () => {
+    try {
+      console.log('Logging in...')
+      const q = query(collection(db, 'users'), where('username', '==', username));
+      const querySnapshot = await getDocs(q);
 
-  const handleAuthentication = () => {
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      setSignedIn(true);
-      setEmail('');
-      setPassword('');
-      navigation.navigate('AppStack');
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
-  }
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = { id: userDoc.id, ...userDoc.data() };
+
+        if (userData.password === password) {
+          console.log('Successfully Logged In!');
+          setUserData(userData);
+          navigation.replace('Dashboard');
+        } else {
+          console.log('Invalid Credentials: Please check your username and password.');
+          Alert.alert('Invalid Credentials', 'Please check your username and password.', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+        }
+      } else {
+        console.log('User Not Found: Please check your username and try again.');
+        Alert.alert('Invalid Credentials', 'Please check your username and password.', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+      }
+    } catch (error) {
+      console.error('Error during login:', error.message);
+    }
+  };
 
   const handleCloseModal = () => {
     setSignedIn(false);
+  }
+
+  const handleHidePassword = () => {
+    setHidePassword(!hidePassword);
   }
 
   return (
@@ -46,15 +62,15 @@ const Login = () => {
         </View>
         <View style={styles.form}>
           <FormTextInput 
-            title="Email"
-            value={email}
-            onChangeText={setEmail}
+            title="Username"
+            value={username}
+            onChangeText={(value) => setUsername(value)}
           /> 
           <View style={styles.password}>
             <FormTextInput 
               title="Password"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(value) => setPassword(value)}
               secureTextEntry={!hidePassword} 
             />  
           </View>
@@ -64,9 +80,8 @@ const Login = () => {
           />
           <CustomButton
             title="Log in"
-            onPress={() => handleAuthentication()}
-          />
-          <ForgotPassword/>
+            onPress={handleLogin}
+          /> 
         </View>
         <Modal
           animationType="slide"

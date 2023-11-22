@@ -1,26 +1,30 @@
 import { StyleSheet, Text, View, Pressable, Image, Dimensions } from "react-native";
 import React, { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from "../../components/Header";
 
 const screenWidth = Dimensions.get('window').width;
 const profilePhoto = require('../../assets/userPhoto.png');
 
-const Account = () => {
+const Account = ({ navigation }) => {
 
-  const navigation = useNavigation();
+  const handleLogout = async () => {
+    console.log('Logging out...')
+    await AsyncStorage.removeItem('isLoggedIn');
+    navigation.replace('Login');
+    console.log('Logged out succesfully!')
+  };
 
   return (
-    <SafeAreaView>
+    <View>
+      <Header
+        title='Account'
+      />
       <View style={styles.accountContainer}>
         <UploadImage/>
         <View style={styles.buttons}>
-          <AccountButton
-            buttonTitle="My Products"
-            buttonIcon={<MaterialIcons name='fastfood' size={24} color="white" />}
-            onPress={() => navigation.navigate('MyProducts')}
-          />
           <AccountButton 
             buttonTitle="Personal Account Information"
             buttonIcon={<MaterialIcons name='security' size={24} color="white" />}
@@ -29,10 +33,11 @@ const Account = () => {
           <AccountButton 
             buttonTitle="Logout"
             buttonIcon={<MaterialIcons name='logout' size={24} color="white" />}
+            onPress={handleLogout}
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

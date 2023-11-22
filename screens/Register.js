@@ -1,41 +1,54 @@
-import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Modal, Pressable  } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Modal, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
 import { FormTextInput, ShowHidePasssword } from "../components/FormTextInput";
 import CustomButton from "../components/CustomButton";
-import { auth } from "../services/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const Register = () => {
+import { db } from "../services/firebase";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore"; 
+
+const Register = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(false);
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setReapetPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [fullname, setFullname] = useState('');
+  const [password, setPassword] = useState('');
   const [isSignedUp, setSignedUp] = useState(false);
 
-  const handleHidePassword = async (password, repeatPassword) => {
-    if(password === repeatPassword){
-      createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        setPassword('');
-        setReapetPassword('');
-        setPhoneNumber('');
-        setEmail('');
-        setFullname('');
-        setSignedUp(true);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+  const handleCreateAccount = () => {
+    try {
+      if (username.trim() === '' || email.trim() === '' || password.trim() === '') {
+        console.log('Invalid Input: Please fill in all fields.');
+        Alert.alert('Invalid Input', 'Please fill in all fields.', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+        return;
+      }
+
+      const userRef = collection(db, 'users');
+
+      // Set the user data in the document
+      addDoc(userRef, {
+        username: username,
+        email: email,
+        password: password,
       });
+
+      console.log('Sign Up Successful: Welcome to the app!');
+      Alert.alert('Sign up Successful', 'Click the OK button to proceed to sign in screen.', [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Error during signup:', error.message);
     }
   }
 
   const handleCloseModal = () => {
     setSignedUp(false);
   };
+
+  const handleHidePassword = () => {
+    setHidePassword(!hidePassword);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,43 +59,31 @@ const Register = () => {
         </View>
         <View style={styles.form}>
           <FormTextInput 
-            title="Full Name"
-            value={fullname}
-            onChangeText={setFullname}
-          /> 
-          <FormTextInput 
-            title="Phone Number"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            title="Username"
+            value={username}
+            onChangeText={(value) => setUsername(value)}
           /> 
           <FormTextInput 
             title="Email"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(value) => setEmail(value)}
           /> 
           <View style={styles.password}>
             <FormTextInput 
               title="Password"
               value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!hidePassword} 
-            />   
-          </View>
-          <View style={styles.password}>
-            <FormTextInput 
-              title="Repeat password"
-              value={repeatPassword}
-              onChangeText={setReapetPassword}
+              onChangeText={(value) => setPassword(value)}
               secureTextEntry={!hidePassword} 
             />   
           </View>
           <ShowHidePasssword
+            onPress={handleHidePassword}
             state={hidePassword}
           />
           <Text style={styles.text}>or</Text>
           <CustomButton
             title="Create an account"
-            onPress={() => handleHidePassword(password, repeatPassword)}
+            onPress={handleCreateAccount}
           />
         </View>
         <Modal

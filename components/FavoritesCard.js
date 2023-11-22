@@ -1,65 +1,96 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { useUser } from '../context/UserContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { db } from "../services/firebase";
+import { doc, updateDoc, arrayRemove, collection } from 'firebase/firestore';
 
 const FavoritesCard = (props) => {
-    
-    const navigation = useNavigation();
+  const { userData } = useUser();
 
-    const handlePress = () => {
-        navigation.navigate('FoodDetail'); 
-    };
+  const navigation = useNavigation();
+  const id = props.id
+
+  const handlePress = () => {
+      navigation.navigate('FoodDetail', { id }); 
+  };
+
+  const handleDelete = async (userId, favoriteId) => {
+    try {
+      const userDocRef = doc(db, 'users', userId);
+  
+      await updateDoc(userDocRef, {
+        favorites: arrayRemove(favoriteId),
+      });
+  
+      console.log('Favorite deleted successfully');
+    } catch (error) {
+      console.error('Error deleting favorite: ', error);
+    }
+  };
+
+  console.log(userData);
 
   return (
     <Pressable onPress={handlePress}>
-      <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={props.image}
-        />
         <View style={styles.descriptionBox}>
-          <View style={styles.descriptionContainer}>
+          <View style={styles.rightSide}>
+            <View>
+              <Image
+                style={styles.image}
+                source={{ uri : props.image }}
+              />
+            </View>
+            <View>
               <Text style={styles.titleText}>{props.title}</Text>
-              <View style={styles.bottomDescription}>
-                  <Text style={styles.reviewsText}>{props.reviews}</Text>
-                  <Text style={styles.priceText}>₱{props.price}</Text>
-              </View>
+              <Text style={styles.priceText}>₱{props.price}</Text>
+            </View>
           </View>
+          <View style={styles.descriptionContainer}>
+            <Pressable onPress={() => handleDelete(userData.id, id)}>
+              <MaterialCommunityIcons name="delete-outline" size={24} color="white" />
+            </Pressable>
+          </View>     
         </View>
-      </View>
-    </Pressable>
+  </Pressable>
   )
 }
 
-export default FavoritesCard
+export default FavoritesCard;
 
 const styles = StyleSheet.create({
-    contianer: {
+    rightSide: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 15,
+    },
+    descriptionBox: {
         flex: 1,
-        alignItems: 'center',
-        maxHeight: 220,
-        maxWidth: '100%',
-        borderRadius: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        padding: 10,
+        height: 120,
+        backgroundColor: '#ECBC24',
+        borderRadius: 7,
+        width: 400,
     },
     descriptionContainer: {
-        backgroundColor: '#ECBC24',
-        width: '100%',
-        maxWidth: '100%',
-        padding: 9,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 15,
         gap: 5,
-        borderBottomRightRadius: 10,
-        borderBottomLeftRadius: 10,
     },
     image: {
-       width: 380,
-       height: 150, 
-       borderTopRightRadius: 10,
-       borderTopLeftRadius: 10,
+       width: 100,
+       height: 100, 
+       borderRadius: 7,
     },
     titleText: {
        color: 'white',
        fontWeight: 'bold',
-       fontSize: 15,
+       fontSize: 17,
     },
     reviewsText: {  
         color: 'white',

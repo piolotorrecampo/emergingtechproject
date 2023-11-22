@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, ImageBackground} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,7 +9,7 @@ import { useUser } from '../context/UserContext';
 
 
 
-const ProductCard = (props) => {
+const ProductCardSpan = (props) => {
     const [pressed, setPressed] = useState(false);
     const navigation = useNavigation();
     const id = props.id;
@@ -109,65 +109,66 @@ const ProductCard = (props) => {
   return (
     <Pressable onPress={handlePress} key={id}>
         <View style={styles.container}>
-            <Image
+            <ImageBackground
                 style={styles.image}
+                imageStyle={{ borderRadius: 7 }}
                 source={{ uri : props.image }}
-            />
-            <View style={styles.descriptionContainer}>
-                <View style={styles.descriptionBox}>
-                    <Text style={styles.titleText}>{props.title}</Text>
-                    <Text style={styles.priceText}>₱{props.price}</Text>
+            >
+                <View style={styles.descriptionContainer}>
+                    <View style={styles.descriptionBox}>
+                        <Text style={styles.titleText}>{props.title}</Text>
+                        <Text style={styles.priceText}>₱{props.price}</Text>
+                    </View>
+                    <Pressable onPress={() => handlePullUp()}>
+                        { pressed ? 
+                            <MaterialCommunityIcons name="bookmark" size={24} color="white" />
+                        : 
+                            <MaterialCommunityIcons name="bookmark-outline" size={24} color="white" />
+                        }
+                    </Pressable>
                 </View>
-                <Pressable onPress={() => handlePullUp()}>
-                    { pressed ? 
-                        <MaterialCommunityIcons name="bookmark" size={24} color="white" />
-                      : 
-                        <MaterialCommunityIcons name="bookmark-outline" size={24} color="white" />
-                    }
-                </Pressable>
-            </View>
+            </ImageBackground>
         </View>
     </Pressable>
   )
 }
 
-export default ProductCard;
+export default ProductCardSpan;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         maxHeight: 220,
-        maxWidth: 190,
+        width: 350,
         borderRadius: 10,
         margin: 5,
     },
     descriptionBox: {
-        flexDirection: 'col',
+        flexDirection: 'column',
     },
     descriptionContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#ECBC24',
+        backgroundColor: 'rgba(236,188,36, 0.5)',
         width: '100%',
-        maxWidth: 190,
+        maxWidth: 350,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        gap: 5,
-        borderBottomRightRadius: 7,
-        borderBottomLeftRadius: 7,
+        borderRadius: 7,
+        top: 110,
     },
     image: {
-       width: 190,
-       height: 220, 
-       borderTopRightRadius: 7,
-       borderTopLeftRadius: 7,
+       width: 340,
+       height: 180, 
+       padding: 10,
     },
     titleText: {
        color: 'white',
        fontWeight: 'bold',
        fontSize: 15,
+       fontFamily: 'Poppins',
     },
     priceText: {
         fontSize: 12,
