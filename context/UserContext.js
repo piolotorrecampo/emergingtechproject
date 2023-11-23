@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
           productsData.push({ id: doc.id, ...doc.data() });
         });
         setProducts(productsData);
+        console.log('UserContext -> Products:', products);
       } catch (error) {
         console.error('Error getting documents: ', error);
       }
@@ -34,7 +35,7 @@ export const UserProvider = ({ children }) => {
         if (userDoc.exists()) {
           const data = { id: userDoc.id, ...userDoc.data() };
           setUserDataUpdated(data);
-          console.log('User data:', data);
+          console.log('UserContext -> UserDataUpdated:', data);
         } else {
           console.log('User document does not exist');
         }
@@ -53,8 +54,7 @@ export const UserProvider = ({ children }) => {
     return () => {
       clearInterval(timerId);
     };
-  }, []);
-  
+  }, [userData]);
 
   return (
     <UserContext.Provider value={{ userData, setUserData, products, userDataUpdated }}>

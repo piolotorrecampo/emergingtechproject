@@ -7,6 +7,7 @@ import { useUser } from "../context/UserContext";
 import { db } from "../services/firebase";
 import { getDocs, getDoc, doc, collection } from '@firebase/firestore';
 import Header from "../components/Header";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -31,17 +32,18 @@ const Favorites = () => {
         console.error(error);
       }
     };
-      let timerId = setInterval(() => {
-          fetchFavorites();
-      }, 2000);
 
-      return () => {
-          clearInterval(timerId);
-      };
+    let timerId = setInterval(() => {
+        fetchFavorites();
+    }, 1000);
+
+    return () => {
+      clearInterval(timerId);
+    };
   }, []);
 
   return (
-    <View>
+    <SafeAreaView>
         <Header
           title='Favorites'
         /> 
@@ -58,7 +60,7 @@ const Favorites = () => {
             ))}
           </View>
         </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

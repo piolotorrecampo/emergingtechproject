@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { UserProvider } from './context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +22,7 @@ import AddProduct from './screens/Accounts/AddProduct';
 import UpdateProduct from './screens/Accounts/UpdateProduct';
 import { useFonts } from 'expo-font';
 import SearchScreen from './screens/SearchScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 const Stack = createStackNavigator();
@@ -57,30 +57,32 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <UserProvider>
-        <Stack.Navigator>
-        <Stack.Screen
-          name="OnBoarding"
-          component={ OnBoardingScreen }
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={ Login }
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="Dashboard" 
-          component={ AppStack } 
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="Register" 
-          component={ Register } 
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-      </UserProvider>
+      <SafeAreaProvider>
+        <UserProvider>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="OnBoarding"
+              component={ OnBoardingScreen }
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={ Login }
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Dashboard" 
+              component={ AppStack } 
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Register" 
+              component={ Register } 
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </UserProvider>
+      </SafeAreaProvider>
     </NavigationContainer>
   );
 }

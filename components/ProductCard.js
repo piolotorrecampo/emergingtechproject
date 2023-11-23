@@ -82,10 +82,12 @@ const ProductCard = (props) => {
                     favoritesCount: currentFavoritesCount + 1,
                 });
 
-                console.log('Product section updated successfully!');
+                    console.log('Product section updated successfully!');
+                    setPressed(!pressed);
                 } else {
-                console.log('Product document not found.');
+                    console.log('Product document not found.');
                 }
+                
             } else {
                 console.log('Product is already in favorites.');
             }
@@ -99,15 +101,12 @@ const ProductCard = (props) => {
 
   const handlePullUp = () => {
     setPressed(!pressed);
-    if (!pressed) {
-        handleAddToFavorites();
-    } else {
-        handleDelete();
-    }
+    handleAddToFavorites();
   }
+  
 
   return (
-    <Pressable onPress={handlePress} key={id}>
+    <Pressable onPress={handlePress} key={props.id}>
         <View style={styles.container}>
             <Image
                 style={styles.image}

@@ -9,6 +9,7 @@ import ProductCard from '../components/ProductCard';
 import { useUser } from '../context/UserContext';
 import { db } from "../services/firebase";
 import { doc, getDoc, updateDoc, arrayUnion, } from '@firebase/firestore';
+import Header from '../components/Header';
 
 const profilePhoto = require('../assets/userPhoto.png');
 
@@ -168,6 +169,9 @@ const CommentSection = (props) => {
 
     return(
         <SafeAreaView>
+            <Header
+                title='Details'
+            />
             <View style={styles.commentContainer}> 
                 <Text style={styles.commentTitle}>Fellow foodies say</Text>
                 <View style={styles.userCommentContainer}>

@@ -80,7 +80,6 @@ const Register = ({ navigation }) => {
             onPress={handleHidePassword}
             state={hidePassword}
           />
-          <Text style={styles.text}>or</Text>
           <CustomButton
             title="Create an account"
             onPress={handleCreateAccount}
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-  justifyContent: 'center',
+    justifyContent: 'center',
   },
   form:  {
     backgroundColor: 'rgba(209, 165, 12, 0.7)',

@@ -27,9 +27,9 @@ export default Filterbar;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFC20F',   
-        paddingTop: 30,
         flexDirection: 'row',
-        height: 85,
+        height: 60,
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 7,

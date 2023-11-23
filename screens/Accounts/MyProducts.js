@@ -7,6 +7,7 @@ import MyProductCard from "../../components/MyProductCard";
 import CustomButton from "../../components/CustomButton";
 import Filterbar from "../../components/Filterbar";
 import Header from "../../components/Header";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const MyProduct = () => {
   const navigation = useNavigation();
@@ -15,7 +16,7 @@ const MyProduct = () => {
   const userProducts = products.filter(product => product.sellerId === userData.id);
 
   return (
-    <View>
+    <SafeAreaView>
       <Header
         title='My Products'
       />
@@ -40,7 +41,7 @@ const MyProduct = () => {
             </View>
           ))}
         </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

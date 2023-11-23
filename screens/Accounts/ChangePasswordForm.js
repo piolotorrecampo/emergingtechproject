@@ -8,6 +8,7 @@ import { useUser } from '../../context/UserContext';
 
 import { db } from "../../services/firebase";
 import { doc, updateDoc, query, where, getDocs, collection } from '@firebase/firestore';
+import Header from '../../components/Header';
 
 const ChangePasswordForm = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(false);
@@ -53,8 +54,10 @@ const ChangePasswordForm = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+        <Header 
+          title='Password'
+        />
         <View style={styles.container}>
-            <Text style={styles.title}>Password</Text>
             <FormTextInput 
               title="Current Password"
               value={currentPassword}

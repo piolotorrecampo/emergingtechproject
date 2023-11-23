@@ -7,6 +7,7 @@ import { useUser } from '../../context/UserContext';
 
 import { db } from "../../services/firebase";
 import { doc, updateDoc, query, where, getDocs, collection } from '@firebase/firestore';
+import Header from '../../components/Header';
 
 const ChangePersonalInfoForm = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -41,8 +42,10 @@ const ChangePersonalInfoForm = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+      <Header
+        title='Personal Information'
+      />
         <View style={styles.container}>
-            <Text style={styles.title}>Personal Information</Text>
             <FormTextInput 
               title="Username"
               value={username}
@@ -62,7 +65,7 @@ const ChangePersonalInfoForm = ({ navigation }) => {
   )
 }
 
-export default ChangePersonalInfoForm
+export default ChangePersonalInfoForm;
 
 const styles = StyleSheet.create({
     container: {

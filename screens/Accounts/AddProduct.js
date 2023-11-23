@@ -10,6 +10,7 @@ import { useUser } from '../../context/UserContext';
 import { db, storage } from "../../services/firebase";
 import { addDoc, collection } from '@firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import Header from '../../components/Header';
 
 const AddProduct = () => {
     const [productName, setProductName] = useState('');
@@ -88,9 +89,10 @@ const AddProduct = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <View style={styles.container}>
-            <Text style={styles.title}>Add Product</Text>
+      <Header
+        title='Add Product'
+      />
+        <ScrollView style={styles.container}>
             <View>
                 <Pressable style={styles.logoContainer} onPress={pickImageAsync}>
                     {image ? (
@@ -129,21 +131,21 @@ const AddProduct = () => {
                 title='Add Product'
                 onPress={() => handleAddProduct(userData.username, productName, price, type, description)}
             />
-        </View>
-      </ScrollView>
+        </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default AddProduct
+export default AddProduct;
 
 const styles = StyleSheet.create({
     container: {
+      flexDirection: 'column',
+      gap: 10,
         backgroundColor: "#D1A50C",
         margin: 10,
         padding: 10,
         borderRadius: 10,
-        gap: 10,
     },
     title: {
         fontSize: 25, 

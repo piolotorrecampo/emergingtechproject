@@ -28,7 +28,7 @@ const Home = () => {
         setAllProducts(userProductsExcluded);
       }
   }, [userData.id, userDataUpdated.favorites, products]);
-  
+
   useEffect(() => {
     const sortedRecentProducts = [...allProducts]
       .sort((a, b) => b.createdAt - a.createdAt)
@@ -44,7 +44,7 @@ const Home = () => {
   }, [allProducts]);
 
   return (
-    <View style={styles.mainContainer}>
+    <SafeAreaView style={styles.mainContainer}>
       <Filterbar/>
       <ScrollView>
         <View style={styles.sectionContainer}>
@@ -96,7 +96,7 @@ const Home = () => {
           </ScrollView>
           </View>
         </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

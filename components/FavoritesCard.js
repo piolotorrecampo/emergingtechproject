@@ -30,9 +30,7 @@ const FavoritesCard = (props) => {
       console.error('Error deleting favorite: ', error);
     }
   };
-
-  console.log(userData);
-
+  
   return (
     <Pressable onPress={handlePress}>
         <View style={styles.descriptionBox}>

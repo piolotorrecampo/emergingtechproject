@@ -16,12 +16,12 @@ export default Header;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFC20F',   
-        paddingTop: 30,
         flexDirection: 'row',
-        height: 90,
+        height: 60,
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: 7,
         paddingVertical: 5,
         marginBottom:  10,
     },
