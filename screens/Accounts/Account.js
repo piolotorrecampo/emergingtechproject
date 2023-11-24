@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   accountNameText: {
     fontWeight: "bold",
     fontSize: screenWidth * 0.06,
-    color: "#FFFFFF",
+    color: "black",
   },
   accountButtonContainer: {
     width: screenWidth * 0.90,
@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FFFFFF",
     fontSize: screenWidth * 0.04,
+    paddingHorizontal: 10,
   },
   buttons: {
     justifyContent: 'center',

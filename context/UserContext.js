@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
       if(userData){
         fetchUserData();
       }
-    }, 2000);
+    }, 10000);
 
     return () => {
       clearInterval(timerId);

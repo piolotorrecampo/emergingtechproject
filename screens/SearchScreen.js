@@ -1,16 +1,20 @@
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 import Header from '../components/Header'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const SearchScreen = () => {
+
   return (
-    <View>
+    <SafeAreaView>
       <Header
         title='Search'
       />
-      <Text>SearchScreen</Text>
-      <TextInput/>
-    </View>
+      <View>
+        <TextInput/>
+      </View>
+     
+    </SafeAreaView>
   )
 }
 

@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ProductCard from '../components/ProductCard';
 import { useUser } from '../context/UserContext';
 import { db } from "../services/firebase";
-import { doc, getDoc, updateDoc, arrayUnion, } from '@firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove} from '@firebase/firestore';
 import Header from '../components/Header';
 
 const profilePhoto = require('../assets/userPhoto.png');
@@ -49,6 +49,9 @@ const FoodDetail = ({ route }) => {
 
   return (
     <SafeAreaView>
+        <Header
+            title='Details'
+        />
         <ScrollView>
             <View style={styles.productDetailsContainer}>
                 {productDetails &&
@@ -96,7 +99,7 @@ const MoreFoods = (props) => {
 
     return(
       <View style={styles.moreFoodsContainer}>
-        <Text style={styles.moreFoodsText}>More Foods..</Text>
+        <Text style={styles.moreFoodsText}>Other seller items</Text>
         <ScrollView horizontal={true}>
             <View style={styles.foodCards}>
                 {data && data.map((product) => (
@@ -168,10 +171,6 @@ const CommentSection = (props) => {
       };
 
     return(
-        <SafeAreaView>
-            <Header
-                title='Details'
-            />
             <View style={styles.commentContainer}> 
                 <Text style={styles.commentTitle}>Fellow foodies say</Text>
                 <View style={styles.userCommentContainer}>
@@ -181,9 +180,8 @@ const CommentSection = (props) => {
                                 <View style={styles.commentBox} key={data.id}>
                                     <Text style={styles.commentText}>{data.description}</Text>
                                     <View style={styles.footerUserDetails}>
-                                        <Text>{data.username}</Text>
-                                        <Text> | </Text>
-                                        <Text>{data.formattedTimestamp}</Text>
+                                        <Text style={styles.commentUsername}>{data.username}  |</Text>
+                                        <Text style={styles.commentTimestamp}>{data.formattedTimestamp}</Text>
                                     </View>
                                 </View>
                             )) : 
@@ -195,18 +193,43 @@ const CommentSection = (props) => {
                     </ScrollView>
                 </View>
                 <View style={styles.commentInputContainer}>
-                    <TextInput onChangeText={(value) => setComment(value)} value={comment} style={styles.commentInput} placeholder='Write a comment' placeholderTextColor="#fff" />
+                    <TextInput onChangeText={(value) => setComment(value)} value={comment} style={styles.commentInput} placeholder='Write a comment' placeholderTextColor="black" />
                     <Pressable onPress={() => handleAddComment()}>
-                        <MaterialCommunityIcons name="send" size={24} color="white" />
+                        <MaterialCommunityIcons name="send" size={24} color="black" />
                     </Pressable>
                 </View>
             </View>
-        </SafeAreaView>
     )
 }
 
 const Details = (props) => {
     const { userData } = useUser();
+    const [pressed, setPressed] = useState(null);
+
+    useEffect(() => {
+        const checkIfProductInFavorites = async () => {
+            try {
+                const userDocRef = doc(db, 'users', userData.id);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists()) {
+                const currentFavorites = userDoc.data().favorites || [];
+                const newFavorite = props.productId;
+
+                // Check if the product is in favorites
+                const productInFavorites = currentFavorites.includes(newFavorite);
+                console.log(productInFavorites);
+                setPressed(productInFavorites);
+                } else {
+                console.log('User document not found.');
+                }
+            } catch (error) {
+                console.error('Error checking if product is in favorites:', error);
+            }
+        };
+
+        checkIfProductInFavorites()
+    }, [])
 
     const handleAddToFavorites = async () => {
         try {
@@ -255,6 +278,29 @@ const Details = (props) => {
         }
     }
 
+    const handleDelete = async (userId, favoriteId) => {
+        try {
+        const userDocRef = doc(db, 'users', userData.id);
+    
+        await updateDoc(userDocRef, {
+            favorites: arrayRemove(props.productId),
+        });
+    
+        console.log('Favorite deleted successfully');
+        } catch (error) {
+        console.error('Error deleting favorite: ', error);
+        }
+    };
+
+    const handlePress = () => {
+        setPressed(!pressed);
+        if(pressed) {
+            handleDelete();
+        }else{
+            handleAddToFavorites();
+        }
+    } 
+
     return (
         <SafeAreaView style={styles.detailsContainer}>
             <View style={styles.sellerInfo}>
@@ -264,8 +310,8 @@ const Details = (props) => {
                         source={props.userImage}
                     />
                     <View style={styles.profileInfo}>
-                        <Text>{props.userName}</Text>
-                        <Text>{props.timestamp}</Text>
+                        <Text style={styles.sellerNameText}>{props.userName}</Text>
+                        <Text  style={styles.productTimestamp}>{props.timestamp}</Text>
                     </View>
                 </View>
             </View>
@@ -276,24 +322,31 @@ const Details = (props) => {
             <View style={styles.foodDetails}>
                 <View style={styles.productMainInfo}>
                     <Text style={styles.foodTitle}>{props.foodTitle}</Text>
-                    <Text style={styles.priceText}>₱{props.price}</Text>
+                    <View style={styles.stats}>
+                        <Text style={styles.priceText}>₱{props.price}</Text>
+                        <View style={styles.favoritesCount}>
+                            <MaterialCommunityIcons name="eye" size={20} color="black" />
+                            <Text>{props.views}</Text>
+                        </View>
+                        <View style={styles.favoritesCount}>
+                            <MaterialCommunityIcons name="bookmark" size={20} color="black" />
+                            <Text>{props.favoritesCount}</Text>
+                        </View>
+                    </View>
                 </View>
-                <Pressable onPress={() => handleAddToFavorites()} style={styles.heartIcon}>
-                    <MaterialCommunityIcons name="bookmark" size={25} color="black" />
-                    <Text>Add to Favorites</Text>
-                </Pressable>
-            </View>
-            <View style={styles.stats}>
-                <View style={styles.views}>
-                    <MaterialCommunityIcons name="bookmark" size={50} color="black" />
-                    <Text>{props.views} Views</Text>
-                </View>
-                <View style={styles.favoritesCount}>
-                    <MaterialCommunityIcons name="bookmark" size={50} color="black" />
-                    <Text>{props.favoritesCount} Favorites Count</Text>
-                </View>
+                {pressed ?
+                    <Pressable onPress={() => handlePress()} style={styles.heartIcon}>
+                        <MaterialCommunityIcons name="bookmark" size={40} color="black" />
+                    </Pressable>
+                : 
+                    <Pressable onPress={() => handlePress()} style={styles.heartIcon}>
+                        <MaterialCommunityIcons name="bookmark-outline" size={40} color="black" />
+                    </Pressable>
+                }
+                
             </View>
             <View style={styles.containerDescription}>
+                <Text style={styles.descriptionText}>Description</Text>
                 <Text style={styles.productDescription}>{props.productDescription}</Text>
             </View>
         </SafeAreaView>
@@ -301,12 +354,36 @@ const Details = (props) => {
 }
  
 const styles = StyleSheet.create({
+    commentTimestamp: {
+        color: 'black',
+        fontSize: 11,
+        fontFamily: 'poppinsLight'
+    },
+    commentUsername:{
+        color: 'black',
+        fontSize: 11,
+        fontFamily: 'poppinsLight',
+    },
+    lineDivider: {
+        borderBottomColor: 'black',
+        backgroundColor: '#ECBC24',
+        borderWidth: 2,
+        width: 100
+    },
+    descriptionText: {
+        fontSize: 17,
+        fontFamily: 'poppinsSemiBold',
+    },
+    sellerNameText: {
+        fontFamily: 'poppinsBold',
+    },
+    productTimestamp: {
+        fontFamily: 'poppinsLight',
+    },
     stats: {
         flexDirection: 'row',
-        gap: 40,
-        padding: 10,
-        backgroundColor: '#D1A50C',
-        justifyContent: 'center',
+        gap: 20,
+        backgroundColor: '#ECBC24',
         alignItems: 'center',
         width: '95%',
     },
@@ -316,30 +393,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     favoritesCount: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 10,
     },
     productDetailsContainer: {
         flex: 1,
     },
     detailsContainer: {
-        alignItems: 'center'
+        alignItems: 'center',
     },  
     sellerInfo: {
         flexDirection: 'row', 
-        justifyContent: 'space-between',
         backgroundColor: '#ECBC24',
         padding: 10,
         width: '95%',
-        alignItems: 'center',
         borderTopLeftRadius: 7,
         borderTopRightRadius: 7,
     },
     profileContainer: {
         flexDirection: 'row',
         gap: 10,
-        justifyContent: 'center',
         alignItems: 'center',
     },
     profileInfo: {
@@ -353,18 +428,18 @@ const styles = StyleSheet.create({
         width: '95%',
         height: 300,
     },
-    productMainInfo: {
-        gap: 5,
-    },
     foodDetails: {
         backgroundColor: "#ECBC24",
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '95%',
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
     },
     foodTitle: {
-        fontSize: 20,
+        fontSize: 30,
+        fontFamily: 'poppinsBold',
+        maxWidth: 310,
     },
     topDescription: {
         flexDirection: 'row',
@@ -372,18 +447,21 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     priceText: {
-        fontSize: 17,
+        fontSize: 20,
+        fontFamily: 'poppinsRegular',
     },
     heartIcon: {
         flexDirection: 'row',
-        paddingVertical: 5,
+        padding: 15,
         gap: 7,
         alignItems: 'center',
     },
     containerDescription: {
-        backgroundColor: 'rgba(242, 189, 121, 0.5)',
+        backgroundColor: "#ECBC24",
         width: '95%',
-        padding: 10,
+        paddingBottom: 10,
+        paddingHorizontal: 20,
+        marginBottom: 10,
         borderBottomLeftRadius: 7,
         borderBottomRightRadius: 7,
     },
@@ -393,11 +471,13 @@ const styles = StyleSheet.create({
         lineHeight:  20,
     },
     commentContainer: {
-        backgroundColor: '#D1A50C',
+        backgroundColor: 'white',
+        marginBottom: 10,
     },
     commentText: {
         textAlign: 'justify',
         lineHeight: 20,
+        fontFamily: 'poppinsSemiBold',
     },
     commentBox: {
         backgroundColor: '#FFC20F',
@@ -408,12 +488,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         gap:20,
         width: 350,
-        marginVertical: 20,
     },
     commentTitle: {
         fontSize: 25,
-        marginHorizontal: 10,
-        color: 'white',
+        marginHorizontal: 13,
+        paddingVertical: 10,
+        color: 'black',
+        fontFamily:'poppinsSemiBold'
     },
     footerUserDetails: {
         flexDirection: 'row',
@@ -429,9 +510,10 @@ const styles = StyleSheet.create({
     commentInput: {
         width: 360,
         height: 40,
-        color: 'white',
+        marginVertical: 10,
+        color: 'black',
         borderWidth: 1,
-        borderColor: 'white',
+        borderColor: 'black',
         marginBottom: 10,
         padding: 10,
         borderRadius: 7, 
@@ -440,9 +522,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse'
     },
     moreFoodsContainer: {
-        backgroundColor: '#D1A50C',
         paddingVertical: 10,
-        marginVertical: 20,
+        backgroundColor: 'white',
+        marginBottom: 100,
     },
     foodCards: {
         flexDirection: 'row',
@@ -450,8 +532,9 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     moreFoodsText: {
+        color: 'black',
         fontSize: 25,
-        marginHorizontal: 10,
-        color: 'white',
+        fontFamily: 'poppinsSemiBold',
+        marginHorizontal: 14,
     }
 })

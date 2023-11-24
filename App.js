@@ -34,7 +34,10 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const [loaded] = useFonts({
-    Poppins: require('./assets/fonts/Poppins-Regular.ttf'),
+    poppinsRegular: require('./assets/fonts/Poppins-Regular.ttf'),
+    poppinsBold: require('./assets/fonts/Poppins-Bold.ttf'),
+    poppinsLight: require('./assets/fonts/Poppins-Light.ttf'),
+    poppinsSemiBold: require('./assets/fonts/Poppins-SemiBold.ttf'),
   });
 
   const checkLoginStatus = async () => {

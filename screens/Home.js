@@ -51,7 +51,7 @@ const Home = () => {
           <Text style={styles.sectionTitle}>Most Viewed</Text>
           <ScrollView horizontal={true} style={styles.scrollContainer}>
           <View style={styles.container}>
-            {mostViewedProducts && mostViewedProducts.map((product) => (
+            {mostViewedProducts && mostViewedProducts.length > 0 ? mostViewedProducts.map((product) => (
               <ProductCardSpan
                 id={product.id} 
                 image={product.image}
@@ -59,7 +59,11 @@ const Home = () => {
                 reviews={product.ratings}
                 price={product.price}
               />
-            ))}
+            )) : (
+              <View style={styles.noItemsAvailableContainer}>
+                <Text style={styles.noItemsAvailableText}>No items available.</Text>
+              </View>
+            )}
           </View>
         </ScrollView>
         </View>
@@ -67,7 +71,7 @@ const Home = () => {
           <Text style={styles.sectionTitle}>Recent Posts</Text>
           <ScrollView horizontal={true} style={styles.scrollContainer}>
           <View style={styles.container}>
-            {recentProducts && recentProducts.map((product) => (
+            {recentProducts && recentProducts.length > 0 ? recentProducts.map((product) => (
               <ProductCardSpan
                 id={product.id} 
                 image={product.image}
@@ -75,7 +79,11 @@ const Home = () => {
                 reviews={product.ratings}
                 price={product.price}
               />
-            ))}
+            )) : (
+              <View style={styles.noItemsAvailableContainer}>
+                <Text style={styles.noItemsAvailableText}>No items available.</Text>
+              </View>
+            )}
           </View>
         </ScrollView>
         </View>
@@ -83,7 +91,7 @@ const Home = () => {
           <Text style={styles.sectionTitle}>More Foods</Text>
           <ScrollView style={styles.scrollContainer}>
             <View style={styles.moreFoodsContainer}>
-              {allProducts && allProducts.map((product) => (
+              {allProducts && allProducts.length > 0 ? allProducts.map((product) => (
                 <ProductCard
                   id={product.id} 
                   image={product.image}
@@ -91,7 +99,11 @@ const Home = () => {
                   reviews={product.ratings}
                   price={product.price}
                 />
-              ))}
+              )) : (
+                <View style={styles.noItemsAvailableContainer}>
+                  <Text style={styles.noItemsAvailableText}>No items available.</Text>
+                </View>
+              )}
             </View>
           </ScrollView>
           </View>
@@ -103,6 +115,13 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  noItemsAvailableContainer: {
+    padding: 10,
+  },
+  noItemsAvailableText: {
+    fontFamily: 'poppinsLight',
+    textAlign: 'center',
+  },
   moreFoodsContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -121,10 +140,9 @@ const styles = StyleSheet.create({
   scrollContainer: {
   },
   sectionTitle: {
-    fontSize: 26,
-    fontStyle: 'bold',
-    paddingVertical: 4,
+    fontSize: 23,
     paddingHorizontal: 10,
+    fontFamily: 'poppinsBold',
   },
   sectionContainer: {
     backgroundColor: 'white',

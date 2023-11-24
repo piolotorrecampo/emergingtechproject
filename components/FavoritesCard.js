@@ -30,7 +30,7 @@ const FavoritesCard = (props) => {
       console.error('Error deleting favorite: ', error);
     }
   };
-  
+
   return (
     <Pressable onPress={handlePress}>
         <View style={styles.descriptionBox}>
@@ -87,17 +87,15 @@ const styles = StyleSheet.create({
     },
     titleText: {
        color: 'white',
-       fontWeight: 'bold',
+       fontFamily: 'poppinsBold',
        fontSize: 17,
        width: 210,
-    },
-    reviewsText: {  
-        color: 'white',
-        fontSize: 11,
     },
     priceText: {
         color: 'white',
         fontWeight: 'bold',
+        fontSize: 13,
+        fontFamily: 'poppinsBold',
     },
     bottomDescription: {
         flexDirection: 'row',

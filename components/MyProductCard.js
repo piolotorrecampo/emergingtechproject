@@ -89,17 +89,18 @@ const styles = StyleSheet.create({
      borderRadius: 7,
   },
   titleText: {
-     color: 'white',
-     fontWeight: 'bold',
-     fontSize: 17,
+    color: 'white',
+    fontFamily: 'poppinsSemiBold',
+    fontSize: 15,
+    width: 150,
   },
   reviewsText: {  
       color: 'white',
       fontSize: 11,
   },
   priceText: {
-      color: 'white',
-      fontWeight: 'bold',
+    color: 'white',
+    fontFamily: 'poppinsLight',
   },
   bottomDescription: {
       flexDirection: 'row',

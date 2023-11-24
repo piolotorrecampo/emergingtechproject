@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 7,
-        top: 110,
+        top: 100,
     },
     image: {
        width: 340,
@@ -166,14 +166,13 @@ const styles = StyleSheet.create({
     },
     titleText: {
        color: 'white',
-       fontWeight: 'bold',
-       fontSize: 15,
-       fontFamily: 'Poppins',
+       fontSize: 17,
+      fontFamily: 'poppinsBold'
     },
     priceText: {
-        fontSize: 12,
+        fontSize: 13,
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily: 'poppinsLight'
     },
     bottomDescription: {
         flexDirection: 'row',

@@ -17,15 +17,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFC20F',   
         flexDirection: 'row',
-        height: 60,
-        padding: 10,
+        height: 55,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 7,
-        paddingVertical: 5,
-        marginBottom:  10,
     },
     title: {
         fontSize: 20,
+        fontFamily: 'poppinsBold',
+        color: 'black',
     }
 })

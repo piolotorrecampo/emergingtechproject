@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 import React, { useState, useEffect } from "react";
 import FavoritesCard from "../components/FavoritesCard";
 import Filterbar from "../components/Filterbar";
@@ -42,6 +42,7 @@ const Favorites = () => {
     };
   }, []);
 
+
   return (
     <SafeAreaView>
         <Header
@@ -49,7 +50,7 @@ const Favorites = () => {
         /> 
         <ScrollView>
           <View style={styles.container}>
-            {userFavorites && userFavorites.map((product) => (
+            {userFavorites && userFavorites.length > 0 ? userFavorites.map((product) => (
               <FavoritesCard
                 id={product.id} 
                 image={product.image}
@@ -57,7 +58,11 @@ const Favorites = () => {
                 reviews={product.ratings}
                 price={product.price}
               />
-            ))}
+            )) : (
+              <View style={styles.noFavoritesContainer}>
+                <Text style={styles.noFavoritesText}>No favorites.</Text>
+              </View>
+            )}
           </View>
         </ScrollView>
     </SafeAreaView>
@@ -70,6 +75,19 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     paddingLeft: 5,
+    marginTop: 10,
     gap: 10,
+    paddingBottom: 100,
   },
+  noFavoritesContainer: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignContent: 'center'
+  },
+  noFavoritesText: {
+    fontSize: 18,
+    fontFamily: 'poppinsSemiBold',
+    textAlign: 'center'
+  }
 });

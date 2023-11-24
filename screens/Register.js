@@ -53,6 +53,7 @@ const Register = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.background} resizeMode="cover" source={require('../assets/landingpageplain.png')}>
+        <View style={styles.overlay}>
         <View style={styles.header}>
           <Text style={styles.textHeader}>Create an account!</Text>
           <Text style={styles.textSubHeader}>Fill up the form to continue</Text>
@@ -100,6 +101,7 @@ const Register = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+      </View>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -112,13 +114,20 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+  },
   textHeader: {
     color: 'white',
-    fontSize: 50,
+    fontSize: 45,
+    fontFamily: 'poppinsBold',
   },
   textSubHeader: {
     color: 'white',
     fontSize: 22,
+    fontFamily: 'poppinsLight',
   },
   header: {
     padding: 10,
@@ -129,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form:  {
-    backgroundColor: 'rgba(209, 165, 12, 0.7)',
+    backgroundColor: 'rgba(209, 165, 12, 0.4)',
     margin: 10,
     padding: 10,
     borderRadius: 15,

@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
     },
     titleText: {
        color: 'white',
-       fontWeight: 'bold',
-       fontSize: 16,
+       fontSize: 17,
        maxWidth: 140,
+       fontFamily: 'poppinsBold'
     },
     priceText: {
-        fontSize: 12,
+        fontSize: 13,
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily: 'poppinsLight',
     },
     bottomDescription: {
         flexDirection: 'row',

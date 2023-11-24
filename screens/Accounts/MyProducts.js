@@ -27,19 +27,21 @@ const MyProduct = () => {
           />
         </View>
         <ScrollView>  
-          {userProducts && userProducts.map((product) => (
-            <View style={styles.container}>
-              <MyProductCard
-                id={product.id} 
-                image={product.image}
-                title={product.name}
-                reviews={product.ratings}
-                price={product.price}
-                description={product.description}
-                type={product.type}
-              />
-            </View>
-          ))}
+          <View style={styles.mainContainer}>
+            {userProducts && userProducts.map((product) => (
+              <View style={styles.container}>
+                <MyProductCard
+                  id={product.id} 
+                  image={product.image}
+                  title={product.name}
+                  reviews={product.ratings}
+                  price={product.price}
+                  description={product.description}
+                  type={product.type}
+                />
+              </View>
+            ))}
+          </View>
         </ScrollView>
     </SafeAreaView>
   );
@@ -48,6 +50,9 @@ const MyProduct = () => {
 export default MyProduct;
 
 const styles = StyleSheet.create({
+  mainContainer:{
+    paddingBottom: 150,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -57,5 +62,6 @@ const styles = StyleSheet.create({
   buttons: {
     marginBottom: 10,
     marginHorizontal: 10,
+    marginTop: 10,
   }
 });
