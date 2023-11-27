@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     text: {
       paddingBottom: 5,
       color: 'white',
-      fontFamily: 'Poppins',
+      fontFamily: 'poppinsSemiBold',
     },
     textinput: {
       padding: 10,
-      width: '85%',
-      fontFamily: 'Poppins',
+      width: '100%',
+      fontFamily: 'poppinsRegular',
       color: 'white',
     },
     showpassword: {
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
       gap: 5,
     },
     textPassword: {
-      fontFamily: 'Poppins',
+      fontFamily: 'poppinsRegular',
       marginTop: 2,
       color: 'white',
     }

@@ -1,14 +1,53 @@
-import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ImageBackground, Pressable, Modal, Alert } from "react-native";
 import React, { useState } from "react";
 import {FormTextInput, ShowHidePasssword} from "../components/FormTextInput";
-import CustomButton from "../components/CustomButton"
+import CustomButton from "../components/CustomButton";
+import { useUser } from '../context/UserContext';
 
+import { db } from "../services/firebase";
+import { getDocs, query, collection, where } from 'firebase/firestore';
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(false);
-  const [isChecked, setIsChecked] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [isSignedIn, setSignedIn] = useState(false);
+  const { setUserData } = useUser();
+
+  const handleLogin = async () => {
+    try {
+      console.log('Logging in...')
+      const q = query(collection(db, 'users'), where('username', '==', username));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = { id: userDoc.id, ...userDoc.data() };
+
+        if (userData.password === password) {
+          console.log('Successfully Logged In!');
+          setUserData(userData);
+          navigation.replace('Dashboard');
+        } else {
+          console.log('Invalid Credentials: Please check your username and password.');
+          Alert.alert('Invalid Credentials', 'Please check your username and password.', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+        }
+      } else {
+        console.log('User Not Found: Please check your username and try again.');
+        Alert.alert('Invalid Credentials', 'Please check your username and password.', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+      }
+    } catch (error) {
+      console.error('Error during login:', error.message);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSignedIn(false);
+  }
 
   const handleHidePassword = () => {
     setHidePassword(!hidePassword);
@@ -17,21 +56,22 @@ const Login = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.background} resizeMode="cover" source={require('../assets/landingpageplain.png')}>
+        <View style={styles.overlay}>
         <View style={styles.header}>
           <Text style={styles.textHeader}>Welcome!</Text>
           <Text style={styles.textSubHeader}>Sign in to continue</Text>
         </View>
         <View style={styles.form}>
           <FormTextInput 
-            title="Email"
-            value={email}
-            onChangeText={setEmail}
+            title="Username"
+            value={username}
+            onChangeText={(value) => setUsername(value)}
           /> 
           <View style={styles.password}>
             <FormTextInput 
               title="Password"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(value) => setPassword(value)}
               secureTextEntry={!hidePassword} 
             />  
           </View>
@@ -41,9 +81,25 @@ const Login = () => {
           />
           <CustomButton
             title="Log in"
-          />
-          <ForgotPassword/>
+            onPress={handleLogin}
+          /> 
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isSignedIn}
+          onRequestClose={handleCloseModal}
+        >
+        <View style={styles.modal}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>You have successfully signed in!</Text>
+            <Pressable style={styles.modalButton} onPress={handleCloseModal}>
+              <Text>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      </View>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -64,13 +120,20 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    justifyContent: 'center',
+  },
   textHeader: {
     color: 'white',
-    fontSize: 50,
+    fontSize: 45,
+    fontFamily: 'poppinsBold',
   },
   textSubHeader: {
     color: 'white',
     fontSize: 22,
+    fontFamily: 'poppinsLight',
   },
   header: {
     padding: 10,
@@ -78,10 +141,10 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-  justifyContent: 'center',
+    justifyContent: 'center',
   },
   form:  {
-    backgroundColor: 'rgba(209, 165, 12, 0.7)',
+    backgroundColor: 'rgba(209, 165, 12, 0.4)',
     margin: 10,
     padding: 10,
     borderRadius: 15,
@@ -96,5 +159,29 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     textAlign: 'center',
   },
-  
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
+  },
+  modalContent: {
+    alignItems: 'center',
+    backgroundColor: "#FFC20F",
+    padding: 10,
+    borderRadius: 10,
+    gap: 10,
+    borderColor: "white",
+    borderWidth: 2,
+  },
+  modalText: {
+    fontSize: 18,
+  },
+  modalButton: {
+    backgroundColor: 'rgb(209, 165, 12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    width: 260,
+    borderRadius: 10,
+  },
 });

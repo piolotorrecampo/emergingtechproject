@@ -15,22 +15,24 @@ const OnBoardingScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.background} resizeMode="cover" source={require('../assets/landingpagebg.png')}>
-        <View style={styles.contents}>
-          <View style={styles.header}>
-            <Image style={styles.logo} source={require('../assets/icon.png')}/>
-            <Text style={styles.textHeader}>Satisfy Your Cravings, One Click at a Time.</Text>
-            <Text style={styles.textSubHeader}>Here at Technological Institute of the Philippines, Quezon City</Text>
-          </View>
-          <View style={styles.buttons}>
-              <CustomButton
-                  title="Log in"
-                  onPress={clickHandlerLogin}
-              />
-              <CustomButton
-                  title="Create an account"
-                  type='true'
-                  onPress={clickHandlerRegister}
-              />
+        <View style={styles.overlay}>
+          <View style={styles.contents}>
+            <View style={styles.header}>
+              <Image style={styles.logo} source={require('../assets/icon.png')}/>
+              <Text style={styles.textHeader}>Satisfy Your Cravings, One Click at a Time.</Text>
+              <Text style={styles.textSubHeader}>Here at Technological Institute of the Philippines, Quezon City</Text>
+            </View>
+            <View style={styles.buttons}>
+                <CustomButton
+                    title="Log in"
+                    onPress={clickHandlerLogin}
+                />
+                <CustomButton
+                    title="Create an account"
+                    type='true'
+                    onPress={clickHandlerRegister}
+                />
+            </View>
           </View>
         </View>
       </ImageBackground>
@@ -47,6 +49,11 @@ const styles = StyleSheet.create({
     },
     background: {
       flex: 1,
+      justifyContent: 'center',
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
       justifyContent: 'center',
     },
     contents: {
@@ -71,12 +78,14 @@ const styles = StyleSheet.create({
       gap: 10,
     },
     textHeader:{
-      fontWeight: 'bold',
-      fontSize: 18,
+      fontSize: 16,
+      textAlign: 'center',
+      fontFamily: 'poppinsBold',
     },
     textSubHeader: {
       textAlign: 'center',
-      fontSize: 12,
-      width: 400,
+      fontSize: 13,
+      width: 250,
+      fontFamily: 'poppinsLight',
     }
 });

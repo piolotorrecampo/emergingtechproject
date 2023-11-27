@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import Header from '../../components/Header';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -12,6 +13,9 @@ const ChooseSetting = () => {
 
   return (
     <SafeAreaView>
+      <Header
+        title='Personal Account Information'
+      />
         <View style={styles.buttons}>
             <AccountButton 
                 buttonTitle="Change Personal Information"

@@ -1,93 +1,158 @@
-import { StyleSheet, ScrollView, View, Image } from "react-native";
-import React from "react";
-import ProductCard from "../components/ProductCard";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Filterbar from "../components/Filterbar";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
 
-const lechon = require('../assets/lechon.png')
+import ProductCard from "../components/ProductCard";
+import ProductCardSpan from "../components/ProductCardSpan";
+import Filterbar from "../components/Filterbar";
+import { useUser } from '../context/UserContext';
+import { SafeAreaView } from "react-native-safe-area-context";
+
+
 
 const Home = () => {
-  const data = [
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  {
-    image: lechon,
-    title: 'Crispy Lechon Kawali',
-    reviews: '4.6 Mekus Mekus',
-    price: '200',
-  },
-  ];
+  const [allProducts, setAllProducts] = useState([]);
+  const [recentProducts, setRecentProducts] = useState([]);
+  const [mostViewedProducts, setMostViewedProducts] = useState([]);
+  const { userDataUpdated, userData, products } = useUser();
+
+  useEffect(() => {
+      if (userDataUpdated.favorites) {
+        const productsNotInFavorites = products.filter(
+          (product) => !userDataUpdated.favorites.includes(product.id) && product.sellerId !== userData.id
+        );
+        setAllProducts(productsNotInFavorites);
+      } else {
+        const userProductsExcluded = products.filter(
+          (product) => product.sellerId !== userData.id
+        );
+        setAllProducts(userProductsExcluded);
+      }
+  }, [userData.id, userDataUpdated.favorites, products]);
+
+  useEffect(() => {
+    const sortedRecentProducts = [...allProducts]
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, 5);
+    setRecentProducts(sortedRecentProducts);
+  }, [allProducts]);
+  
+  useEffect(() => {
+    const sortedMostViewedProducts = [...allProducts]
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 5);
+    setMostViewedProducts(sortedMostViewedProducts);
+  }, [allProducts]);
 
   return (
-    <View>
-        <View>
-          <Filterbar/>
-        </View>
-        <ScrollView>
+    <SafeAreaView style={styles.mainContainer}>
+      <Filterbar/>
+      <ScrollView>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Most Viewed</Text>
+          <ScrollView horizontal={true} style={styles.scrollContainer}>
           <View style={styles.container}>
-          {data && data.map((product, index) => (
-            <ProductCard
-              key={index} 
-              image={product.image}
-              title={product.title}
-              reviews={product.reviews}
-              price={product.price}
-            />
-          ))}
+            {mostViewedProducts && mostViewedProducts.length > 0 ? mostViewedProducts.map((product) => (
+              <ProductCardSpan
+                id={product.id} 
+                image={product.image}
+                title={product.name}
+                reviews={product.ratings}
+                price={product.price}
+              />
+            )) : (
+              <View style={styles.noItemsAvailableContainer}>
+                <Text style={styles.noItemsAvailableText}>No items available.</Text>
+              </View>
+            )}
           </View>
         </ScrollView>
-    </View>
+        </View>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Recent Posts</Text>
+          <ScrollView horizontal={true} style={styles.scrollContainer}>
+          <View style={styles.container}>
+            {recentProducts && recentProducts.length > 0 ? recentProducts.map((product) => (
+              <ProductCardSpan
+                id={product.id} 
+                image={product.image}
+                title={product.name}
+                reviews={product.ratings}
+                price={product.price}
+              />
+            )) : (
+              <View style={styles.noItemsAvailableContainer}>
+                <Text style={styles.noItemsAvailableText}>No items available.</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+        </View>
+        <View style={styles.lastSectionContainer}>
+          <Text style={styles.sectionTitle}>More Foods</Text>
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.moreFoodsContainer}>
+              {allProducts && allProducts.length > 0 ? allProducts.map((product) => (
+                <ProductCard
+                  id={product.id} 
+                  image={product.image}
+                  title={product.name}
+                  reviews={product.ratings}
+                  price={product.price}
+                />
+              )) : (
+                <View style={styles.noItemsAvailableContainer}>
+                  <Text style={styles.noItemsAvailableText}>No items available.</Text>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          </View>
+        </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
+  noItemsAvailableContainer: {
+    padding: 10,
+  },
+  noItemsAvailableText: {
+    fontFamily: 'poppinsLight',
+    textAlign: 'center',
+  },
+  moreFoodsContainer: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent:'center',
+    alignItems: 'center',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
+    marginBottom: 10,
   },
+  mainContainer: {
+    flexDirection: 'column',
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  scrollContainer: {
+  },
+  sectionTitle: {
+    fontSize: 23,
+    paddingHorizontal: 10,
+    fontFamily: 'poppinsBold',
+  },
+  sectionContainer: {
+    backgroundColor: 'white',
+    marginVertical: 10, 
+    paddingVertical: 10,
+  },
+  lastSectionContainer: {
+    backgroundColor: 'white',
+    marginVertical: 10, 
+    paddingVertical: 10,
+    marginBottom: 100,
+  }
 });

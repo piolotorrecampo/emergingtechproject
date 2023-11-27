@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, ImageBackground} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { db } from "../services/firebase";
 import { doc, updateDoc, getDoc, arrayRemove } from '@firebase/firestore';
@@ -9,7 +9,7 @@ import { useUser } from '../context/UserContext';
 
 
 
-const ProductCard = (props) => {
+const ProductCardSpan = (props) => {
     const [pressed, setPressed] = useState(false);
     const navigation = useNavigation();
     const id = props.id;
@@ -82,12 +82,10 @@ const ProductCard = (props) => {
                     favoritesCount: currentFavoritesCount + 1,
                 });
 
-                    console.log('Product section updated successfully!');
-                    setPressed(!pressed);
+                console.log('Product section updated successfully!');
                 } else {
-                    console.log('Product document not found.');
+                console.log('Product document not found.');
                 }
-                
             } else {
                 console.log('Product is already in favorites.');
             }
@@ -101,45 +99,50 @@ const ProductCard = (props) => {
 
   const handlePullUp = () => {
     setPressed(!pressed);
-    handleAddToFavorites();
+    if (!pressed) {
+        handleAddToFavorites();
+    } else {
+        handleDelete();
+    }
   }
-  
 
   return (
-    <Pressable onPress={handlePress} key={props.id}>
+    <Pressable onPress={handlePress} key={id}>
         <View style={styles.container}>
-            <Image
+            <ImageBackground
                 style={styles.image}
+                imageStyle={{ borderRadius: 7 }}
                 source={{ uri : props.image }}
-            />
-            <View style={styles.descriptionContainer}>
-                <View style={styles.descriptionBox}>
-                    <Text style={styles.titleText}>{props.title}</Text>
-                    <Text style={styles.priceText}>₱{props.price}</Text>
+            >
+                <View style={styles.descriptionContainer}>
+                    <View style={styles.descriptionBox}>
+                        <Text style={styles.titleText}>{props.title}</Text>
+                        <Text style={styles.priceText}>₱{props.price}</Text>
+                    </View>
+                    <Pressable onPress={() => handlePullUp()}>
+                        { pressed ? 
+                            <MaterialCommunityIcons name="bookmark" size={24} color="white" />
+                        : 
+                            <MaterialCommunityIcons name="bookmark-outline" size={24} color="white" />
+                        }
+                    </Pressable>
                 </View>
-                <Pressable onPress={() => handlePullUp()}>
-                    { pressed ? 
-                        <MaterialCommunityIcons name="bookmark" size={24} color="white" />
-                      : 
-                        <MaterialCommunityIcons name="bookmark-outline" size={24} color="white" />
-                    }
-                </Pressable>
-            </View>
+            </ImageBackground>
         </View>
     </Pressable>
   )
 }
 
-export default ProductCard;
+export default ProductCardSpan;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        maxHeight: 300,
-        maxWidth: 190,
-        borderRadius: 7,
-        margin: 4
+        maxHeight: 220,
+        width: 350,
+        borderRadius: 10,
+        margin: 5,
     },
     descriptionBox: {
         flexDirection: 'column',
@@ -148,31 +151,28 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#ECBC24',
+        backgroundColor: 'rgba(236,188,36, 0.5)',
         width: '100%',
-        maxWidth: 200,
+        maxWidth: 350,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        gap: 5,
-        borderBottomRightRadius: 7,
-        borderBottomLeftRadius: 7,
+        borderRadius: 7,
+        top: 100,
     },
     image: {
-       width: 190,
-       height: 220, 
-       borderTopRightRadius: 7,
-       borderTopLeftRadius: 7,
+       width: 340,
+       height: 180, 
+       padding: 10,
     },
     titleText: {
        color: 'white',
        fontSize: 17,
-       maxWidth: 140,
-       fontFamily: 'poppinsBold'
+      fontFamily: 'poppinsBold'
     },
     priceText: {
         fontSize: 13,
         color: 'white',
-        fontFamily: 'poppinsLight',
+        fontFamily: 'poppinsLight'
     },
     bottomDescription: {
         flexDirection: 'row',
