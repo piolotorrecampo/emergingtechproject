@@ -6,12 +6,49 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from "../../components/Header";
 import { useUser } from "../../context/UserContext";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get('window').width;
 const profilePhoto = require('../../assets/userPhoto.png');
 
+import { db } from "../../services/firebase";
+import { getDocs, getDoc, doc, collection } from '@firebase/firestore';
+
 const Account = ({ navigation }) => {
   const { userData } = useUser();
+  const [updateImage, setUpdateImage] = useState('');
+  const [updateUsername, setUpdateUseranme] = useState('');
+  const [updateEmail, setUpdateEmail] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDocRef = doc(collection(db, 'users'), userData.id);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        if (userDocSnapshot.exists()) {
+          const username = userDocSnapshot.data().username;
+          const email = userDocSnapshot.data().email;
+          const image = userDocSnapshot.data().image;
+          setUpdateEmail(email);
+          setUpdateImage(image);
+          setUpdateUseranme(username);
+        } else {
+          console.log('User document does not exist');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    let timerId = setInterval(() => {
+        fetchData();
+    }, 1000);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
 
   const handleLogout = async () => {
     console.log('Logging out...')
@@ -27,7 +64,9 @@ const Account = ({ navigation }) => {
       />
       <View style={styles.accountContainer}>
         <UploadImage
-          name={userData.name}
+          name={updateUsername}
+          email={updateEmail}
+          image={updateImage}
         />
         <View style={styles.buttons}>
           <AccountButton 
@@ -58,62 +97,44 @@ const AccountButton = (props) => {
 }
 
 const UploadImage = (props) => {
-  const [activeButton, setActiveButton] = useState(null);
-  const [isImageModalVisible, setImageModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work.");
-      }
-        })();
-  }, []);
-
-  const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri)
-    } else {
-      alert('You did not select any image.');
-    }
-  };
-
-  const handlePress = (buttonName) => {
-    setActiveButton(buttonName);
-  };
-
-  const handleImagePress = (imageSource) => {
-    setSelectedImage(imageSource);
-    setImageModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-    setImageModalVisible(false);
-  };
-
+  const handlePress = () => {
+    navigation.navigate('ChoosePersonalInfoForm');
+  }
+  
   return(
     <View>
-      <View style={styles.accountName}>
-        <Pressable onPress={pickImageAsync}>
-          <Image source={profilePhoto} style={styles.imageStyle} />
+      <View style={styles.accountProfile}>
+        <Pressable  onPress={() => handlePress()}>
+          { props.image ?
+            <Image source={{ uri : props.image }} style={styles.imageStyle} />
+            :
+            <Image source={profilePhoto} style={styles.imageStyle} />
+          }
         </Pressable>
-        <Text style={styles.accountNameText}>{props.name}</Text>
+        <View style={styles.dataContainer}>
+          <Text style={styles.accountNameText}>{props.name}</Text>
+          <Text style={styles.emailText}>{props.email}</Text>
+        </View> 
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  accountProfile: {
+    marginVertical: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageStyle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderColor: '#FFC20F',
+    borderWidth: 9,
+  },
   accountContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -129,10 +150,16 @@ const styles = StyleSheet.create({
     padding: screenWidth * 0.10,
     marginBottom: screenWidth * 0.10,
   },
+  emailText: {
+    fontFamily: 'poppinsLight',
+    fontSize:  15,
+    textAlign: 'center',
+  },
   accountNameText: {
-    fontWeight: "bold",
-    fontSize: screenWidth * 0.06,
-    color: "black",
+    fontSize: 30,
+    color: 'black',
+    fontFamily: 'poppinsBold',
+    textAlign: 'center',
   },
   accountButtonContainer: {
     width: screenWidth * 0.90,
@@ -155,5 +182,8 @@ const styles = StyleSheet.create({
   buttons: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  dataContainer: {
+    marginVertical: 15,
   }
 });
