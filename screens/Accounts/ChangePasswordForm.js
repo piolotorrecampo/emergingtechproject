@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import React, {useState} from 'react';
 import CustomButton from '../../components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -33,6 +33,11 @@ const ChangePasswordForm = ({ navigation }) => {
           await updateDoc(userRef, {
             password: newPassword,
           });
+
+          Alert.alert('Successful', 'Password changed successfully.', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+
           setPassword('');
           setCurrentPassword('');
           console.log('Update successful');

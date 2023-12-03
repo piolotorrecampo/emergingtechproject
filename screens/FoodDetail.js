@@ -16,6 +16,7 @@ const profilePhoto = require('../assets/userPhoto.png');
 const FoodDetail = ({ route }) => {
   const [productDetails, setProductDetails] = useState(null);
   const [sellerName, setSellerName] = useState('');
+  const [sellerImage, setSellerImage] = useState('');
   const productId = route.params.id; 
   const { products } = useUser();
 
@@ -35,6 +36,7 @@ const FoodDetail = ({ route }) => {
           if (sellerDocSnapshot.exists()) {
             const sellerData = sellerDocSnapshot.data();
             setSellerName(sellerData.username);
+            setSellerImage(sellerData.image);
           } else {
             console.log('Seller not found.');
           }
@@ -57,7 +59,7 @@ const FoodDetail = ({ route }) => {
                 {productDetails &&
                     <Details 
                         productId={productDetails.id}
-                        userImage={profilePhoto}
+                        userImage={sellerImage.length <= 0 ? profilePhoto : sellerImage}
                         userName={sellerName}
                         productImage={productDetails.image}
                         reviews={productDetails.ratings}
@@ -307,7 +309,7 @@ const Details = (props) => {
                 <View style={styles.profileContainer}>
                     <Image
                         style={styles.userImage}
-                        source={props.userImage}
+                        source={{ uri : props.userImage} }
                     />
                     <View style={styles.profileInfo}>
                         <Text style={styles.sellerNameText}>{props.userName}</Text>
@@ -423,6 +425,9 @@ const styles = StyleSheet.create({
     userImage: {
         height: 50,
         width: 50,
+        borderRadius: 25,
+        borderColor: 'black',
+        borderWidth: 1,
     },
     productImage: {
         width: '95%',
