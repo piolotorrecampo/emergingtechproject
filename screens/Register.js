@@ -4,7 +4,7 @@ import { FormTextInput, ShowHidePasssword } from "../components/FormTextInput";
 import CustomButton from "../components/CustomButton";
 
 import { db } from "../services/firebase";
-import { doc, setDoc, addDoc, collection } from "firebase/firestore"; 
+import { doc, setDoc, getDocs, addDoc, collection, query, where } from "firebase/firestore"; 
 
 const Register = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(false);
@@ -13,34 +13,45 @@ const Register = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isSignedUp, setSignedUp] = useState(false);
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     try {
       if (username.trim() === '' || email.trim() === '' || password.trim() === '') {
         console.log('Invalid Input: Please fill in all fields.');
         Alert.alert('Invalid Input', 'Please fill in all fields.', [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
         ]);
         return;
       }
-
+  
       const userRef = collection(db, 'users');
-
+  
+      // Check if the username already exists
+      const querySnapshot = await getDocs(query(userRef, where('username', '==', username)));
+      if (querySnapshot.docs.length > 0) {
+        console.log('Username already exists. Please choose a different username.');
+        Alert.alert('Invalid Username', 'Username already exists. Please choose a different username.', [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+        return;
+      }
+  
       // Set the user data in the document
       addDoc(userRef, {
         username: username,
         email: email,
         password: password,
       });
-
+  
       console.log('Sign Up Successful: Welcome to the app!');
       Alert.alert('Sign up Successful', 'Click the OK button to proceed to sign in screen.', [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
       navigation.replace('Login');
     } catch (error) {
       console.error('Error during signup:', error.message);
     }
-  }
+  };
+  
 
   const handleCloseModal = () => {
     setSignedUp(false);
